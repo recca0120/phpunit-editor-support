@@ -1,4 +1,4 @@
-import { FastXmlParser, X2js, Xml2js } from '../src/xml-parsers';
+import { FastXmlParser, X2jsParser, Xml2jsParser } from '../src/xml-parsers';
 import { TestCase, Type } from '../src/parsers';
 
 import { Filesystem } from '../src/filesystem';
@@ -6,7 +6,7 @@ import { JUnitParser } from '../src/parsers';
 import { TextLineFactory } from '../src/text-line';
 import { resolve as pathResolve } from 'path';
 
-const parsers = [FastXmlParser, X2js, Xml2js];
+const parsers = [FastXmlParser, X2jsParser, Xml2jsParser];
 
 parsers.forEach(xmlParser => {
     const files: Filesystem = new Filesystem();

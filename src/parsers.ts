@@ -15,17 +15,6 @@ export enum Type {
     FAILED = 'failed',
 }
 
-export const TypeMap = new Map<Type, Type>([
-    [Type.PASSED, Type.PASSED],
-    [Type.ERROR, Type.ERROR],
-    [Type.WARNING, Type.SKIPPED],
-    [Type.FAILURE, Type.ERROR],
-    [Type.INCOMPLETE, Type.INCOMPLETE],
-    [Type.RISKY, Type.RISKY],
-    [Type.SKIPPED, Type.SKIPPED],
-    [Type.FAILED, Type.ERROR],
-]);
-
 export interface Detail {
     file: string;
     line: number;
@@ -231,7 +220,7 @@ export class JUnitParser extends Parser {
 }
 
 interface TeamCity {
-    status: string;
+    eventName: string;
     type?: string;
     count?: string;
     name?: string;
@@ -260,7 +249,7 @@ export class TeamCityParser extends Parser {
     protected parseTestCase(group: any): Promise<TestCase> {
         if (group.length === 2) {
             group.splice(1, 0, {
-                status: 'testPassed',
+                eventName: 'testPassed',
             });
         }
 
@@ -270,7 +259,7 @@ export class TeamCityParser extends Parser {
             .replace(/::\\/g, '::')
             .split('::');
 
-        const type = this.typeMap[error.status];
+        const type = this.typeMap[error.eventName];
 
         const testCase: TestCase = {
             name,
@@ -328,7 +317,7 @@ export class TeamCityParser extends Parser {
 
                 const argv: string[] = require('minimist-string')(line)._;
                 const teamCity: TeamCity = {
-                    status: argv.shift() as string,
+                    eventName: argv.shift() as string,
                 };
 
                 return argv.reduce((options, arg) => {
@@ -345,7 +334,7 @@ export class TeamCityParser extends Parser {
                     });
                 }, teamCity);
             })
-            .filter(item => ['testCount', 'testSuiteStarted', 'testSuiteFinished'].indexOf(item.status) === -1);
+            .filter(item => ['testCount', 'testSuiteStarted', 'testSuiteFinished'].indexOf(item.eventName) === -1);
     }
 
     private groupByType(items: TeamCity[]): TeamCity[][] {
@@ -358,7 +347,7 @@ export class TeamCityParser extends Parser {
 
             results[counter].push(item);
 
-            if (item.status === 'testFinished') {
+            if (item.eventName === 'testFinished') {
                 counter++;
             }
 
