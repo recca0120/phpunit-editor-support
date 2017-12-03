@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "amd",
         "target": "es5",
         "outDir": "dist",
+        "outFile": "dist/index.js",
         "lib": [
             "es2016"
         ],
@@ -20,7 +20,6 @@
     "exclude": [
         "scripts",
         "node_modules",
-        "tests",
-        "dist"
+        "tests"
     ]
 }
