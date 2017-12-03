@@ -3,7 +3,7 @@ scripts/
 src/
 tests/
 .travis.yml
-appveryor.yml
+appveyor.yml
 package-lock.json
 tsconfig.json
 tslint.json
