@@ -16,12 +16,11 @@
         "noUnusedLocals": true,
         "noUnusedParameters": false
     },
-    "include": [
-        "src/**/*.ts"
-    ],
     "exclude": [
+        "coverage",
         "scripts",
         "node_modules",
-        "tests"
+        "tests",
+        "dist"
     ]
 }
