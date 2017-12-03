@@ -1,4 +1,4 @@
-import { JUnitParser, TeamCityParser, TestCase, Type } from '../src/parsers';
+import { JUnitParser, State, TeamCityParser, TestCase } from '../src/parsers';
 
 import { Filesystem } from '../src/filesystem';
 import { TextLineFactory } from '../src/text-line';
@@ -32,7 +32,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 13,
             time: 0.006241,
-            type: Type.PASSED,
+            type: State.PASSED,
         });
     });
 
@@ -46,7 +46,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 20,
             time: 0.001918,
-            type: Type.FAILURE,
+            type: State.FAILURE,
             fault: {
                 type: 'PHPUnit_Framework_ExpectationFailedException',
                 message: 'Failed asserting that false is true.',
@@ -65,7 +65,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 25,
             time: 0.001087,
-            type: Type.ERROR,
+            type: State.ERROR,
             fault: {
                 type: 'PHPUnit_Framework_Exception',
                 message:
@@ -85,7 +85,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 30,
             time: 0.001138,
-            type: Type.SKIPPED,
+            type: State.SKIPPED,
             fault: {
                 type: 'PHPUnit_Framework_SkippedTestError',
                 message: 'Skipped Test',
@@ -104,7 +104,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 35,
             time: 0.001081,
-            type: Type.INCOMPLETE,
+            type: State.INCOMPLETE,
             fault: {
                 type: 'PHPUnit_Framework_IncompleteTestError',
                 message: 'Incomplete Test',
@@ -123,7 +123,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 45,
             time: 0.164687,
-            type: Type.ERROR,
+            type: State.ERROR,
             fault: {
                 type: 'BadMethodCallException',
                 message:
@@ -152,7 +152,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 13,
             time: 0.008761,
-            type: Type.ERROR,
+            type: State.ERROR,
             fault: {
                 type: 'Mockery\\Exception\\InvalidCountException',
                 message: [
@@ -213,7 +213,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 23,
             time: 0.001352,
-            type: Type.SKIPPED,
+            type: State.SKIPPED,
             fault: {
                 type: 'skipped',
                 message: '',
@@ -232,7 +232,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 28,
             time: 0.000954,
-            type: Type.SKIPPED,
+            type: State.SKIPPED,
             fault: {
                 type: 'skipped',
                 message: '',
@@ -251,7 +251,7 @@ describe('JUnitParser', () => {
             file: 'C:\\Users\\recca\\github\\tester-phpunit\\tests\\PHPUnitTest.php',
             line: 35,
             time: 0.205927,
-            type: Type.RISKY,
+            type: State.RISKY,
             fault: {
                 type: 'PHPUnit\\Framework\\RiskyTestError',
                 message: 'Risky Test',
@@ -304,7 +304,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnit2Test.php',
                 line: 13,
                 time: 0.02,
-                type: Type.PASSED,
+                type: State.PASSED,
             });
         });
 
@@ -318,7 +318,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnit2Test.php',
                 line: 20,
                 time: 0,
-                type: Type.FAILURE,
+                type: State.FAILURE,
                 fault: {
                     message: 'Failed asserting that false is true.',
                     details: [],
@@ -336,7 +336,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnit2Test.php',
                 line: 25,
                 time: 0,
-                type: Type.SKIPPED,
+                type: State.SKIPPED,
                 fault: {
                     message: 'The MySQLi extension is not available.',
                     details: [],
@@ -354,7 +354,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnit2Test.php',
                 line: 30,
                 time: 0,
-                type: Type.SKIPPED,
+                type: State.SKIPPED,
                 fault: {
                     message: 'This test has not been implemented yet.',
                     details: [],
@@ -372,7 +372,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnit2Test.php',
                 line: 33,
                 time: 0,
-                type: Type.RISKY,
+                type: State.RISKY,
                 fault: {
                     message: 'This test did not perform any assertions',
                     details: [],
@@ -402,7 +402,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 13,
                 time: 0,
-                type: Type.PASSED,
+                type: State.PASSED,
             });
         });
 
@@ -416,7 +416,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 20,
                 time: 0,
-                type: Type.FAILURE,
+                type: State.FAILURE,
                 fault: {
                     message: 'Failed asserting that false is true.',
                     details: [],
@@ -434,7 +434,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 25,
                 time: 0,
-                type: Type.SKIPPED,
+                type: State.SKIPPED,
                 fault: {
                     message: 'The MySQLi extension is not available.',
                     details: [],
@@ -452,7 +452,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 30,
                 time: 0,
-                type: Type.SKIPPED,
+                type: State.SKIPPED,
                 fault: {
                     message: 'This test has not been implemented yet.',
                     details: [],
@@ -470,7 +470,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 33,
                 time: 0,
-                type: Type.RISKY,
+                type: State.RISKY,
                 fault: {
                     message: 'This test did not perform any assertions',
                     details: [],
@@ -488,7 +488,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 39,
                 time: 0,
-                type: Type.FAILURE,
+                type: State.FAILURE,
                 fault: {
                     message:
                         "Failed asserting that Array &0 (\n    'e' => 'f'\n    0 => 'g'\n    1 => 'h'\n) is identical to Array &0 (\n    'a' => 'b'\n    'c' => 'd'\n).",
@@ -507,7 +507,7 @@ describe('TeamCityParser', () => {
                 file: 'C:\\Users\\recca\\Desktop\\vscode-phpunit\\tests\\fixtures\\PHPUnitTest.php',
                 line: 31,
                 time: 0.99,
-                type: Type.FAILURE,
+                type: State.FAILURE,
                 fault: {
                     message: 'Invalid JSON was returned from the route.',
                     details: [
