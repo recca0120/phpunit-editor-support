@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - "8"
+
+sudo: false
+
+install:
+  - ps: Install-Product node 6.6.0 x64
+  - npm install -g npm
+  - npm install
+
+platform:
+  - x86
+  - x64
+
+cache:
+  directories:
+    - ".eslintcache"
+    - "node_modules"
+
+script:
+  - npm test

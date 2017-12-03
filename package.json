@@ -1,0 +1,56 @@
+{
+    "name": "phpunit-editor-support",
+    "version": "1.0.0",
+    "description": "PHPUnit editor support",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "test": "npm run compile && jest",
+        "test:watch": "jest --watch",
+        "precommit": "lint-staged",
+        "prettier": "prettier",
+        "prettier-write":
+            "npm run prettier -- --single-quote --trailing-comma es5 --write --print-width 120 --tab-width 4",
+        "prettier-project": "npm run prettier-write -- {test,tests,src}/**/*.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/recca0120/phpunit-editor-support.git"
+    },
+    "author": "recca0120",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^21.1.8",
+        "@types/node": "^8.0.53",
+        "husky": "^0.14.3",
+        "jest": "^21.2.1",
+        "lint-staged": "^6.0.0",
+        "prettier": "^1.8.2",
+        "ts-jest": "^21.2.4",
+        "tslint": "^5.8.0",
+        "tslint-config-prettier": "^1.6.0",
+        "typescript": "^2.6.2",
+        "x2js": "^3.1.1",
+        "xml2js": "^0.4.19"
+    },
+    "dependencies": {
+        "fast-xml-parser": "^2.8.1",
+        "minimist": "^1.2.0",
+        "minimist-string": "^1.0.2"
+    },
+    "jest": {
+        "collectCoverage": true,
+        "moduleFileExtensions": ["ts", "tsx", "js"],
+        "transform": {
+            "^.+\\.(ts|tsx)$": "<rootDir>/scripts/preprocessor.js"
+        },
+        "testMatch": ["<rootDir>/tests/**/*.test.(ts|tsx|js)"]
+    },
+    "lint-staged": {
+        "linters": {
+            "{src,tests}/**/*.{ts,js}": ["npm run prettier-write --", "git add"]
+        }
+    }
+}

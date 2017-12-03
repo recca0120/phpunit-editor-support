@@ -1,0 +1,16 @@
+{
+    "extends": ["tslint-config-prettier"],
+    "env": {
+      "jest": true
+    },
+    "rules": {
+      "class-name": true,
+      "curly": true,
+      "eofline": true,
+      "no-duplicate-variable": true,
+      "no-unused-expression": true,
+      "no-var-keyword": true,
+      "prefer-const": true,
+      "triple-equals": true
+    }
+  }
