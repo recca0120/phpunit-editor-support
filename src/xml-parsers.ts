@@ -1,9 +1,9 @@
-export interface Parser {
+export interface XmlParser {
     parse(content: string): Promise<any>;
     map(testCaseNode: any): any;
 }
 
-export class FastXmlParser implements Parser {
+export class FastXmlParser implements XmlParser {
     parse(content: string): Promise<any> {
         return new Promise(resolve => {
             resolve(
@@ -23,7 +23,7 @@ export class FastXmlParser implements Parser {
     }
 }
 
-export class X2js implements Parser {
+export class X2jsParser implements XmlParser {
     parse(content: string): Promise<any> {
         const x2js = require('x2js');
         return new Promise(resolve => {
@@ -40,7 +40,7 @@ export class X2js implements Parser {
     }
 }
 
-export class Xml2js implements Parser {
+export class Xml2jsParser implements XmlParser {
     parse(content: string): Promise<any> {
         return new Promise((resolve, reject) => {
             require('xml2js').parseString(content, { trim: true, async: true }, (error: any, result: any) => {

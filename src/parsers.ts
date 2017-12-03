@@ -1,4 +1,4 @@
-import { Parser as IXmlParser, FastXmlParser as XmlParser } from './xml-parsers';
+import { XmlParser as IXmlParser, FastXmlParser as XmlParser } from './xml-parsers';
 import { TextLine, TextLineFactory } from './text-line';
 
 import { Filesystem } from './filesystem';
