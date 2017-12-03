@@ -2,6 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
+        "outDir": "dist",
         "lib": [
             "es2016"
         ],
@@ -15,6 +16,9 @@
         "noUnusedLocals": true,
         "noUnusedParameters": false
     },
+    "include": [
+        "src/**/*.ts"
+    ],
     "exclude": [
         "scripts",
         "node_modules",
