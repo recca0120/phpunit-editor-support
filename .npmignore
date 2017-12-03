@@ -1,5 +1,7 @@
 node_modules/
+scripts/
 src/
+tests/
 .travis.yml
 appveryor.yml
 package-lock.json
