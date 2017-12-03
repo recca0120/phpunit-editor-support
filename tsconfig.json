@@ -1,9 +1,7 @@
 {
     "compilerOptions": {
-        "module": "amd",
-        "target": "es5",
-        "outDir": "dist",
-        "outFile": "dist/index.js",
+        "module": "commonjs",
+        "target": "es6",
         "lib": [
             "es2016"
         ],
