@@ -1,9 +1,12 @@
 {
     "name": "phpunit-editor-support",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "PHPUnit editor support",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
+    "typescript": {
+        "definition": "dist/index.d.ts"
+    },
     "scripts": {
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
