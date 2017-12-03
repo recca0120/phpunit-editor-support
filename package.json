@@ -1,6 +1,6 @@
 {
     "name": "phpunit-editor-support",
-    "version": "1.0.9",
+    "version": "1.0.11",
     "description": "PHPUnit editor support",
     "main": "dist/main.js",
     "types": "dist/main.d.ts",
@@ -13,8 +13,7 @@
         "prettier": "prettier",
         "prettier-write": "npm run prettier -- --single-quote --trailing-comma es5 --write --print-width 120 --tab-width 4",
         "prettier-project": "npm run prettier-write -- {test,tests,src}/**/*.ts",
-        "prepublishOnly": "npm run compile",
-        "prerelease": "npm test"
+        "prepublish": "tsc -p ./ --outDir dist/"
     },
     "repository": {
         "type": "git",
@@ -29,7 +28,6 @@
         "jest": "^21.2.1",
         "lint-staged": "^6.0.0",
         "prettier": "^1.8.2",
-        "ts-jest": "^21.2.4",
         "tslint": "^5.8.0",
         "tslint-config-prettier": "^1.6.0",
         "typescript": "^2.6.2",
