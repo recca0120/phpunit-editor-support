@@ -1,9 +1,9 @@
 {
     "name": "phpunit-editor-support",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "PHPUnit editor support",
     "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "types": "dist/index.d.ts",
     "typescript": {
         "definition": "dist/index.d.ts"
     },
@@ -15,7 +15,8 @@
         "precommit": "lint-staged",
         "prettier": "prettier",
         "prettier-write": "npm run prettier -- --single-quote --trailing-comma es5 --write --print-width 120 --tab-width 4",
-        "prettier-project": "npm run prettier-write -- {test,tests,src}/**/*.ts"
+        "prettier-project": "npm run prettier-write -- {test,tests,src}/**/*.ts",
+        "prepublishOnly": "npm run compile"
     },
     "repository": {
         "type": "git",
