@@ -1,10 +1,8 @@
 import { Process } from '../src/process';
-import { ProcessFactory } from '../src/process-factory';
 
-describe('Process Tests', () => {
-    it('Process Factory', async () => {
-        const factory = new ProcessFactory();
-        const process = factory.create(new Process());
+describe('Process', () => {
+    it('spawn', async () => {
+        const process = new Process();
 
         process
             .on('stdout', (buffer: Buffer) => {
@@ -14,8 +12,6 @@ describe('Process Tests', () => {
                 expect(code).toEqual(0);
             });
 
-        const response: string = await process.spawn(['echo', '123']);
-
-        expect(response).toEqual('123');
+        expect(await process.spawn(['echo', '123'])).toEqual('123');
     });
 });

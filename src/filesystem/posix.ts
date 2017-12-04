@@ -12,47 +12,14 @@ export class POSIX implements Files {
     protected extensions = [''];
     protected separator: string = '/';
 
-    findUp(search: string[] | string, opts?: FilesOptions): string {
-        let { cwd } = Object.assign(
-            {
-                cwd: process.cwd(),
-            },
-            opts
-        );
-
-        const root = pathParse(cwd).root;
-        // const basePath = opts.basePath ? pathResolve(opts.basePath) : root;
-
-        do {
-            const find = this.usePath(search, {
-                cwd: cwd,
-            });
-
-            if (find) {
-                return find;
-            }
-
-            cwd = pathResolve(cwd, '..');
-        } while (root !== cwd);
-
-        return this.find(search, {
-            cwd: root,
-        });
+    find(search: string[] | string, opts: FilesOptions = {}): string {
+        return this.usePath(search, opts) || this.useSystemPath(search, opts);
     }
 
-    find(search: string[] | string, opts?: FilesOptions): string {
-        return this.usePath(search, opts) || this.useSystemPath(search);
-    }
+    exists(search: string[] | string, opts: FilesOptions = {}): boolean {
+        const cwd: string = opts.cwd || process.cwd();
 
-    exists(search: string[] | string, opts?: FilesOptions): boolean {
         search = ensureArray(search);
-
-        const { cwd } = Object.assign(
-            {
-                cwd: process.cwd(),
-            },
-            opts
-        );
 
         for (const file of search) {
             if (
@@ -66,15 +33,38 @@ export class POSIX implements Files {
         return false;
     }
 
-    protected usePath(search: string[] | string, opts?: FilesOptions): string {
-        search = ensureArray(search);
+    findUp(search: string[] | string, opts: FilesOptions = {}): string {
+        let cwd: string = opts.cwd || process.cwd();
 
-        const { cwd } = Object.assign(
-            {
-                cwd: process.cwd(),
-            },
-            opts
+        const root = pathParse(cwd).root;
+
+        do {
+            const find = this.usePath(
+                search,
+                Object.assign(opts, {
+                    cwd: cwd,
+                })
+            );
+
+            if (find) {
+                return find;
+            }
+
+            cwd = pathResolve(cwd, '..');
+        } while (root !== cwd);
+
+        return this.find(
+            search,
+            Object.assign(opts, {
+                cwd: root,
+            })
         );
+    }
+
+    protected usePath(search: string[] | string, opts: FilesOptions = {}): string {
+        const cwd: string = opts.cwd || process.cwd();
+
+        search = ensureArray(search);
 
         for (const file of search) {
             for (const pwd of [`${cwd}${this.separator}`, '']) {
@@ -91,13 +81,18 @@ export class POSIX implements Files {
         return '';
     }
 
-    protected useSystemPath(search: string[] | string): string {
+    protected useSystemPath(search: string[] | string, opts: FilesOptions = {}): string {
+        const systemPaths: string[] = opts.systemPaths || this.systemPaths;
+
         search = ensureArray(search);
 
-        for (const systemPath of this.systemPaths) {
-            const find = this.usePath(search, {
-                cwd: systemPath,
-            });
+        for (const systemPath of systemPaths) {
+            const find = this.usePath(
+                search,
+                Object.assign(opts, {
+                    cwd: systemPath,
+                })
+            );
 
             if (find) {
                 return find;

@@ -1,35 +1,27 @@
-import { TestCase, Type } from '../../src/parsers';
-import { Xml2jsParser, XmlParser } from '../../src/xml-parsers';
+import { Parser, TestCase, Type } from '../../src/parsers';
 
 import { Filesystem } from '../../src/filesystem';
 import { JUnitParser } from '../../src/parsers';
 import { TextLineFactory } from '../../src/text-line-factory';
+import { Xml2jsParser } from '../../src/xml-parsers';
 import { resolve as pathResolve } from 'path';
 
 describe('Xml2jsParser', () => {
-    const files: Filesystem = new Filesystem();
-    const textLineFactory: TextLineFactory = new TextLineFactory(files);
-    const xmlParser: XmlParser = new Xml2jsParser();
-    const parser: JUnitParser = new JUnitParser(files, textLineFactory, xmlParser);
-    let testCases: TestCase[] = [];
-    async function getTestCase(key: number): Promise<TestCase> {
-        if (testCases.length === 0) {
-            testCases = await parser.parse(pathResolve(__dirname, '..', 'fixtures/junit.xml'));
-        }
+    const getTestCase = (() => {
+        const parser: Parser = new JUnitParser(new Filesystem(), new TextLineFactory(), new Xml2jsParser());
+        const promise: Promise<TestCase[]> = parser.parse(pathResolve(__dirname, '../fixtures/junit.xml'));
 
-        return testCases[key];
-    }
+        return (key: number) => {
+            return new Promise(resolve => {
+                promise.then(items => {
+                    resolve(items[key]);
+                });
+            });
+        };
+    })();
 
-    beforeEach(() => {
-        spyOn(files, 'getAsync').and.callFake(fileName => {
-            return Promise.resolve(files.get(fileName));
-        });
-    });
-
-    it('it should parse passed', async () => {
-        const testCase = await getTestCase(0);
-
-        expect(testCase).toEqual({
+    it('passed', async () => {
+        expect(await getTestCase(0)).toEqual({
             name: 'testPassed',
             class: 'PHPUnitTest',
             classname: null,
@@ -40,10 +32,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should parse failed', async () => {
-        const testCase = await getTestCase(1);
-
-        expect(testCase).toEqual({
+    it('failed', async () => {
+        expect(await getTestCase(1)).toEqual({
             name: 'testFailed',
             class: 'PHPUnitTest',
             classname: null,
@@ -59,10 +49,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should parse error', async () => {
-        const testCase = await getTestCase(2);
-
-        expect(testCase).toEqual({
+    it('error', async () => {
+        expect(await getTestCase(2)).toEqual({
             name: 'testError',
             class: 'PHPUnitTest',
             classname: null,
@@ -79,10 +67,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should parse skipped', async () => {
-        const testCase = await getTestCase(3);
-
-        expect(testCase).toEqual({
+    it('skipped', async () => {
+        expect(await getTestCase(3)).toEqual({
             name: 'testSkipped',
             class: 'PHPUnitTest',
             classname: null,
@@ -98,10 +84,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should parse incomplete', async () => {
-        const testCase = await getTestCase(4);
-
-        expect(testCase).toEqual({
+    it('incomplete', async () => {
+        expect(await getTestCase(4)).toEqual({
             name: 'testIncomplete',
             class: 'PHPUnitTest',
             classname: null,
@@ -117,10 +101,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should parse exception', async () => {
-        const testCase = await getTestCase(5);
-
-        expect(testCase).toEqual({
+    it('exception', async () => {
+        expect(await getTestCase(5)).toEqual({
             name: 'testReceive',
             class: 'PHPUnitTest',
             classname: null,
@@ -146,10 +128,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should get current error message when mockery call not correct.', async () => {
-        const testCase = await getTestCase(6);
-
-        expect(testCase).toEqual({
+    it('current mockery call', async () => {
+        expect(await getTestCase(6)).toEqual({
             name: 'testCleanDirectory',
             class: 'Recca0120\\Upload\\Tests\\PHPUnitTest',
             classname: null,
@@ -207,10 +187,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should be skipped when testcase has skipped tag', async () => {
-        const testCase = await getTestCase(7);
-
-        expect(testCase).toEqual({
+    it('testcase has skipped tag', async () => {
+        expect(await getTestCase(7)).toEqual({
             name: 'testSkipped',
             class: 'PHPUnitTest',
             classname: 'PHPUnitTest',
@@ -226,10 +204,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should be skipped when testcase has incomplete tag', async () => {
-        const testCase = await getTestCase(8);
-
-        expect(testCase).toEqual({
+    it('testcase has incomplete tag', async () => {
+        expect(await getTestCase(8)).toEqual({
             name: 'testIncomplete',
             class: 'PHPUnitTest',
             classname: 'PHPUnitTest',
@@ -245,10 +221,8 @@ describe('Xml2jsParser', () => {
         });
     });
 
-    it('it should be risky when testcase exception is PHPUnitFrameworkRiskyTestError', async () => {
-        const testCase = await getTestCase(9);
-
-        expect(testCase).toEqual({
+    it('risky', async () => {
+        expect(await getTestCase(9)).toEqual({
             name: 'testRisky',
             class: 'PHPUnitTest',
             classname: 'PHPUnitTest',

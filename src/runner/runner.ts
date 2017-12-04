@@ -10,22 +10,17 @@ import { dirname } from 'path';
 
 export class Runner {
     constructor(
-        private parserFactory: ParserFactory = new ParserFactory(),
-        private processFactory: ProcessFactory = new ProcessFactory(),
         private files: Filesystem = new Filesystem(),
+        private processFactory: ProcessFactory = new ProcessFactory(),
+        private parserFactory: ParserFactory = new ParserFactory(),
         private dispatcher: EventEmitter = new EventEmitter()
     ) {}
 
-    run(path: string, params: string[], opts: RunnerOptions): Promise<TestCase[]> {
-        const { rootPath, execPath } = Object.assign(
-            {
-                rootPath: __dirname,
-                execPath: '',
-            },
-            opts
-        );
+    run(path: string, params: string[] = [], opts: RunnerOptions = {}): Promise<TestCase[]> {
+        const rootPath = opts.rootPath || __dirname;
+        const execPath = opts.execPath || '';
 
-        const cwd: string = this.files.isFile(path) ? this.files.dirname(path) : path;
+        const cwd: string = this.files.type(path) === 'f' ? this.files.dirname(path) : path;
         const runnerParams = new RunnerParams(params);
 
         return new Promise((resolve, reject) => {

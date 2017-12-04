@@ -1,14 +1,10 @@
-import { Parser, TestCase, Type } from '../../src/parsers';
+import { JUnitParser, Parser, TestCase, Type } from '../../src/parsers';
 
-import { FastXmlParser } from '../../src/xml-parsers';
-import { Filesystem } from '../../src/filesystem';
-import { JUnitParser } from '../../src/parsers';
-import { TextLineFactory } from '../../src/text-line-factory';
 import { resolve as pathResolve } from 'path';
 
-describe('FastXmlParser', () => {
+describe('JUnitParser', () => {
     const getTestCase = (() => {
-        const parser: Parser = new JUnitParser(new Filesystem(), new TextLineFactory(), new FastXmlParser());
+        const parser: Parser = new JUnitParser();
         const promise: Promise<TestCase[]> = parser.parse(pathResolve(__dirname, '../fixtures/junit.xml'));
 
         return (key: number) => {
