@@ -130,7 +130,7 @@ export class Runner {
 
             const spawnOptions = [executable].concat(runnerParams.toParams()).concat([path]);
 
-            this.dispatcher.emit('command', spawnOptions.join(' '));
+            this.dispatcher.emit('start', spawnOptions.join(' '));
 
             this.processFactory
                 .create()
@@ -140,7 +140,6 @@ export class Runner {
                     cwd: rootPath,
                 })
                 .then((output: string) => {
-                    this.dispatcher.emit('exit', output);
                     const parser = this.parserFactory.create(runnerParams.has('--teamcity') ? 'teamcity' : 'junit');
                     const content = runnerParams.has('--teamcity') ? output : runnerParams.get('--log-junit');
                     parser
@@ -152,6 +151,8 @@ export class Runner {
                             resolve(items);
                         })
                         .catch((error: string) => reject(error));
+
+                    this.dispatcher.emit('exit', output);
                 });
         });
     }
