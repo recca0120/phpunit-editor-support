@@ -1,11 +1,25 @@
 import { Parser, TeamCityParser, TestCase, Type } from '../../src/parsers';
+import { basename, resolve as pathResolve } from 'path';
+import { readFile, readFileSync } from 'fs';
 
-import { resolve as pathResolve } from 'path';
-import { readFileSync } from 'fs';
+import { Filesystem } from '../../src/filesystem';
+import { TextLineFactory } from '../../src/text-line-factory';
+
+class FilesystemStub extends Filesystem {
+    getAsync(path: string, encoding: string = 'utf8'): Promise<string> {
+        path = pathResolve(__dirname, '../fixtures/tests', path.substr(path.lastIndexOf('\\') + 1));
+
+        return new Promise((resolve, reject) => {
+            readFile(path, encoding, (error: any, data: any) => {
+                return error ? reject(error) : resolve(data);
+            });
+        });
+    }
+}
 
 describe('TeamCityParser', () => {
     const getTestCase = (() => {
-        const parser: Parser = new TeamCityParser();
+        const parser: Parser = new TeamCityParser(new Filesystem(), new TextLineFactory(new FilesystemStub()));
         const promise: Promise<TestCase[]> = parser.parse(
             readFileSync(pathResolve(__dirname, '../fixtures/teamcity.txt')).toString()
         );
