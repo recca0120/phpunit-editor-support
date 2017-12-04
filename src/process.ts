@@ -23,7 +23,12 @@ export class Process {
 
                 process.on('exit', code => {
                     this.dispatcher.emit('exit', code);
-                    resolve(output.map(buffer => buffer.toString()).join('').replace(/\n$/, ''));
+                    resolve(
+                        output
+                            .map(buffer => buffer.toString())
+                            .join('')
+                            .replace(/\n$/, '')
+                    );
                 });
             });
         });
@@ -33,11 +38,5 @@ export class Process {
         this.dispatcher.on(name, callback);
 
         return this;
-    }
-}
-
-export class ProcessFactory {
-    public create(process: Process = new Process): Process {
-        return process;
     }
 }

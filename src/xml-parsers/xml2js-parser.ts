@@ -1,44 +1,4 @@
-export interface XmlParser {
-    parse(content: string): Promise<any>;
-    map(testCaseNode: any): any;
-}
-
-export class FastXmlParser implements XmlParser {
-    parse(content: string): Promise<any> {
-        return new Promise(resolve => {
-            resolve(
-                require('fast-xml-parser').parse(content, {
-                    attrPrefix: '_',
-                    textNodeName: '__text',
-                    ignoreNonTextNodeAttr: false,
-                    ignoreTextNodeAttr: false,
-                    ignoreNameSpace: false,
-                })
-            );
-        });
-    }
-
-    map(testCaseNode: any): any {
-        return testCaseNode;
-    }
-}
-
-export class X2jsParser implements XmlParser {
-    parse(content: string): Promise<any> {
-        const x2js = require('x2js');
-        return new Promise(resolve => {
-            resolve(
-                new x2js({
-                    enableToStringFunc: false,
-                }).xml2js(content)
-            );
-        });
-    }
-
-    map(testCaseNode: any): any {
-        return testCaseNode;
-    }
-}
+import { XmlParser } from './xml-parser';
 
 export class Xml2jsParser implements XmlParser {
     parse(content: string): Promise<any> {

@@ -1,5 +1,5 @@
-import { TextLine, TextLineFactory } from '../src/text-line';
-
+import { TextLine } from '../src/text-line';
+import { TextLineFactory } from '../src/text-line-factory';
 import { resolve as pathResolve } from 'path';
 
 describe('TextLine Tests', () => {

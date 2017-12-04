@@ -1,8 +1,10 @@
-import { JUnitParser, ParserFactory } from '../src/parsers';
-import { Process, ProcessFactory } from '../src/process';
 import { Runner, RunnerParams } from '../src/runner';
 
 import { Filesystem } from '../src/filesystem';
+import { JUnitParser } from '../src/parsers';
+import { ParserFactory } from '../src/parser-factory';
+import { Process } from '../src/process';
+import { ProcessFactory } from '../src/process-factory';
 import { resolve as pathResolve } from 'path';
 
 describe('Command Options Tests', () => {

@@ -1,7 +1,7 @@
 import { JUnitParser, TeamCityParser, TestCase, Type } from '../src/parsers';
 
 import { Filesystem } from '../src/filesystem';
-import { TextLineFactory } from '../src/text-line';
+import { TextLineFactory } from '../src/text-line-factory';
 import { FastXmlParser as XmlParser } from '../src/xml-parsers';
 import { resolve as pathResolve } from 'path';
 
