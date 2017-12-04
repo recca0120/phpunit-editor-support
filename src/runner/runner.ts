@@ -50,11 +50,11 @@ export class Runner {
                     const content = runnerParams.has('--teamcity') ? output : runnerParams.get('--log-junit');
                     parser
                         .parse(content)
-                        .then((items: TestCase[]) => {
+                        .then((tests: TestCase[]) => {
                             if (runnerParams.has('--log-junit')) {
                                 this.files.unlink(runnerParams.get('--log-junit'));
                             }
-                            resolve(items);
+                            resolve(tests);
                         })
                         .catch((error: string) => reject(error));
 
