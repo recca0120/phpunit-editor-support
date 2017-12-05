@@ -4,6 +4,7 @@ import { ParserFactory } from '../../src/parser-factory';
 import { Process } from '../../src/process';
 import { ProcessFactory } from '../../src/process-factory';
 import { Runner } from '../../src/runner';
+import { isWindows } from '../../../src/helpers';
 import { resolve as pathResolve } from 'path';
 
 describe('Runner', () => {
@@ -26,5 +27,21 @@ describe('Runner', () => {
         await runner.run(pathResolve(__dirname, '../fixtures/tests/PHPUnitTest.php'), [], {
             rootPath: pathResolve(__dirname, '../fixtures/tests/'),
         });
+    });
+
+    it('getExecutable', () => {
+        const files = new Filesystem();
+        const runner: Runner = new Runner(files);
+        const cwd = pathResolve(__dirname, '../fixtures/tests/PHPUnitTest.php');
+        const rootPath = pathResolve(__dirname, '../fixtures/');
+
+        const expected: string = pathResolve(__dirname, '../fixtures/vendor/bin/phpunit') + (isWindows() ? '.bat' : '');
+
+        expect(
+            runner.getExecutable(cwd, {
+                rootPath,
+                execPath: '',
+            })
+        ).toEqual(expected);
     });
 });

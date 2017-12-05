@@ -6,7 +6,6 @@ import { RunnerOptions } from './runner-options';
 import { RunnerParams } from './runner-params';
 import { State } from './state';
 import { TestCase } from '../parsers';
-import { dirname } from 'path';
 
 export class Runner {
     constructor(
@@ -17,13 +16,8 @@ export class Runner {
     ) {}
 
     run(path: string, params: string[] = [], opts: RunnerOptions = {}): Promise<TestCase[]> {
-        opts = Object.assign(
-            {
-                rootPath: __dirname,
-                execPath: '',
-            },
-            opts
-        );
+        opts.rootPath = opts.rootPath || __dirname;
+        opts.execPath = opts.execPath || '';
 
         const cwd: string = this.files.type(path) === 'f' ? this.files.dirname(path) : path;
         const runnerParams = new RunnerParams(params);
@@ -37,9 +31,9 @@ export class Runner {
                 runnerParams.put('-c', this.getConfiguration(cwd, opts) || false);
             }
 
-            const executable: string[] = this.getExecutable(cwd, opts);
+            const executable: string = this.getExecutable(cwd, opts);
 
-            const spawnOptions = executable.concat(runnerParams.toParams()).concat([path]);
+            const spawnOptions = [executable].concat(runnerParams.toParams()).concat([path]);
 
             this.dispatcher.emit('start', spawnOptions.join(' '));
 
@@ -74,26 +68,26 @@ export class Runner {
         return this;
     }
 
-    private getConfiguration(cwd: string, opts: RunnerOptions): string {
+    public getConfiguration(cwd: string, opts: RunnerOptions): string {
         return this.files.findUp(['phpunit.xml', 'phpunit.xml.dist'], { cwd, rootPath: opts.rootPath });
     }
 
-    private getExecutable(cwd: string, opts: RunnerOptions): string[] {
-        const execPath: string = opts.execPath as string;
+    public getExecutable(cwd: string, opts: RunnerOptions): string {
+        let execPath: string = opts.execPath as string;
 
-        if (['', 'phpunit'].indexOf(execPath) !== -1) {
-            return [execPath];
+        if (['', 'phpunit'].indexOf(execPath) === -1) {
+            return execPath;
         }
 
-        const path: string = this.files.findUp(
-            ['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'].filter(path => path !== ''),
-            { cwd, rootPath: opts.rootPath }
-        );
+        execPath = this.files.findUp(['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'], {
+            cwd,
+            rootPath: opts.rootPath,
+        });
 
-        if (!path) {
+        if (!execPath) {
             throw State.PHPUNIT_NOT_FOUND;
         }
 
-        return [path];
+        return execPath;
     }
 }
