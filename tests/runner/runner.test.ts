@@ -41,9 +41,6 @@ describe('Runner', () => {
                 rootPath,
                 execPath: '',
             })
-        ).toEqual([
-            pathResolve(__dirname, '../fixtures/usr/bin/php') + (isWindows() ? '.exe' : ''),
-            pathResolve(__dirname, '../fixtures/vendor/phpunit/phpunit/phpunit'),
-        ]);
+        ).toEqual([pathResolve(__dirname, '../fixtures/vendor/bin/phpunit')]);
     });
 });
