@@ -32,7 +32,7 @@ describe('Runner', () => {
     it('getExecutable', () => {
         const files = new Filesystem();
         const runner: Runner = new Runner(files);
-        const cwd = pathResolve(__dirname, '../fixtures/tests/PHPUnitTest.php');
+        const cwd = pathResolve(__dirname, '../fixtures/tests/');
         const rootPath = pathResolve(__dirname, '../fixtures/');
 
         expect(
