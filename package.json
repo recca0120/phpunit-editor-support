@@ -1,6 +1,6 @@
 {
     "name": "phpunit-editor-support",
-    "version": "1.0.20",
+    "version": "1.0.21",
     "description": "PHPUnit editor support",
     "main": "dist/main.js",
     "types": "dist/main.d.ts",

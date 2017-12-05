@@ -1,10 +1,15 @@
 import { Windows } from '../../src/filesystem';
+import { isWindows } from '../../src/helpers';
 import { resolve as pathResolve } from 'path';
 
 describe('Windows', () => {
     const files: Windows = new Windows();
 
     it('find', () => {
+        if (isWindows() === false) {
+            return;
+        }
+
         expect(
             files.find('php', {
                 cwd: pathResolve(__dirname, '../fixtures/usr/bin'),
@@ -13,6 +18,10 @@ describe('Windows', () => {
     });
 
     it('find system path', () => {
+        if (isWindows() === false) {
+            return;
+        }
+
         expect(
             files.find('cmd', {
                 cwd: pathResolve(__dirname, '../fixtures/usr/bin'),
@@ -22,6 +31,10 @@ describe('Windows', () => {
     });
 
     it('exists', () => {
+        if (isWindows() === false) {
+            return;
+        }
+
         expect(
             files.exists('php', {
                 cwd: pathResolve(__dirname, '../fixtures/usr/bin'),
@@ -36,6 +49,10 @@ describe('Windows', () => {
     });
 
     it('findUp', () => {
+        if (isWindows() === false) {
+            return;
+        }
+
         expect(
             files.findUp('vendor/bin/phpunit', {
                 cwd: pathResolve(__dirname, '../fixtures/usr/bin'),

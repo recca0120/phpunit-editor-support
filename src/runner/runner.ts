@@ -6,6 +6,7 @@ import { RunnerOptions } from './runner-options';
 import { RunnerParams } from './runner-params';
 import { State } from './state';
 import { TestCase } from '../parsers';
+import { tap } from '../../src/helpers';
 
 export class Runner {
     constructor(
@@ -81,7 +82,7 @@ export class Runner {
             return opts.execPath;
         }
 
-        const execPath: string = opts.execPath || '';
+        const execPath: string = (opts.execPath || '').trim();
 
         if (['', 'phpunit'].indexOf(execPath) === -1) {
             return [execPath];
@@ -92,6 +93,15 @@ export class Runner {
             rootPath: opts.rootPath,
         };
 
-        return [this.files.findUp(['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'], options)];
+        return tap(
+            [this.files.findUp(['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'], options)].filter(
+                (cmd: string) => cmd !== ''
+            ),
+            (commands: string[]) => {
+                if (commands.length === 0) {
+                    throw State.PHPUNIT_NOT_FOUND;
+                }
+            }
+        );
     }
 }

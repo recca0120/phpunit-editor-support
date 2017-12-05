@@ -1,11 +1,10 @@
-import { isWindows, parseSentence } from '../../src/helpers';
-
 import { Filesystem } from '../../src/filesystem';
 import { JUnitParser } from '../../src/parsers/index';
 import { ParserFactory } from '../../src/parser-factory';
 import { Process } from '../../src/process';
 import { ProcessFactory } from '../../src/process-factory';
 import { Runner } from '../../src/runner';
+import { isWindows } from '../../src/helpers';
 import { resolve as pathResolve } from 'path';
 
 describe('Runner', () => {
@@ -41,6 +40,6 @@ describe('Runner', () => {
                 rootPath,
                 execPath: '',
             })
-        ).toEqual([pathResolve(__dirname, '../fixtures/vendor/bin/phpunit')]);
+        ).toEqual([pathResolve(__dirname, '../fixtures/vendor/bin/phpunit') + (isWindows() ? '.bat' : '')]);
     });
 });
