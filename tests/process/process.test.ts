@@ -1,4 +1,4 @@
-import { Process } from '../src/process';
+import { Process } from '../../src/process';
 
 describe('Process', () => {
     it('spawn', async () => {

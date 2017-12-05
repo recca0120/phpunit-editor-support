@@ -1,14 +1,14 @@
 import { EventEmitter } from 'events';
 import { Filesystem } from '../filesystem';
-import { ParserFactory } from '../parser-factory';
-import { ProcessFactory } from '../process-factory';
-import { RunnerOptions } from './runner-options';
-import { RunnerParams } from './runner-params';
+import { PHPUnitOptions } from './phpunit-options';
+import { PHPUnitParams } from './phpunit-params';
+import { ParserFactory } from '../parsers';
+import { ProcessFactory } from '../process';
 import { State } from './state';
 import { TestCase } from '../parsers';
-import { tap } from '../../src/helpers';
+import { tap } from '../helpers';
 
-export class Runner {
+export class PHPUnit {
     constructor(
         private files: Filesystem = new Filesystem(),
         private processFactory: ProcessFactory = new ProcessFactory(),
@@ -16,23 +16,23 @@ export class Runner {
         private dispatcher: EventEmitter = new EventEmitter()
     ) {}
 
-    run(path: string, params: string[] = [], opts: RunnerOptions = {}): Promise<TestCase[]> {
+    run(path: string, params: string[] = [], opts: PHPUnitOptions = {}): Promise<TestCase[]> {
         opts.rootPath = opts.rootPath || __dirname;
 
         const cwd: string = this.files.type(path) === 'f' ? this.files.dirname(path) : path;
-        const runnerParams = new RunnerParams(params);
+        const phpunitParms = new PHPUnitParams(params);
 
         return new Promise((resolve, reject) => {
-            if (runnerParams.has('--teamcity') === false) {
-                runnerParams.put('--log-junit', this.files.tmpfile(`vscode-phpunit-junit-${new Date().getTime()}.xml`));
+            if (phpunitParms.has('--teamcity') === false) {
+                phpunitParms.put('--log-junit', this.files.tmpfile(`vscode-phpunit-junit-${new Date().getTime()}.xml`));
             }
 
-            if (runnerParams.has('-c') === false) {
-                runnerParams.put('-c', this.getConfiguration(cwd, opts) || false);
+            if (phpunitParms.has('-c') === false) {
+                phpunitParms.put('-c', this.getConfiguration(cwd, opts) || false);
             }
 
             const spawnOptions = this.getExecutable(cwd, opts)
-                .concat(runnerParams.toParams())
+                .concat(phpunitParms.toParams())
                 .concat([path]);
 
             this.dispatcher.emit('start', spawnOptions.join(' '));
@@ -46,13 +46,13 @@ export class Runner {
                         cwd: opts.rootPath,
                     })
                     .then((output: string) => {
-                        const parser = this.parserFactory.create(runnerParams.has('--teamcity') ? 'teamcity' : 'junit');
-                        const content = runnerParams.has('--teamcity') ? output : runnerParams.get('--log-junit');
+                        const parser = this.parserFactory.create(phpunitParms.has('--teamcity') ? 'teamcity' : 'junit');
+                        const content = phpunitParms.has('--teamcity') ? output : phpunitParms.get('--log-junit');
                         parser
                             .parse(content)
                             .then((tests: TestCase[]) => {
-                                if (runnerParams.has('--log-junit')) {
-                                    this.files.unlink(runnerParams.get('--log-junit'));
+                                if (phpunitParms.has('--log-junit')) {
+                                    this.files.unlink(phpunitParms.get('--log-junit'));
                                 }
                                 resolve(tests);
                             })
@@ -67,17 +67,17 @@ export class Runner {
         });
     }
 
-    on(name: string | symbol, callback: any): Runner {
+    on(name: string | symbol, callback: any): PHPUnit {
         this.dispatcher.on(name, callback);
 
         return this;
     }
 
-    public getConfiguration(cwd: string, opts: RunnerOptions): string {
+    public getConfiguration(cwd: string, opts: PHPUnitOptions): string {
         return this.files.findUp(['phpunit.xml', 'phpunit.xml.dist'], { cwd, rootPath: opts.rootPath });
     }
 
-    public getExecutable(cwd: string, opts: RunnerOptions): string[] {
+    public getExecutable(cwd: string, opts: PHPUnitOptions): string[] {
         if (opts.execPath instanceof Array) {
             return opts.execPath;
         }

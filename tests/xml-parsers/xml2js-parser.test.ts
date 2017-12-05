@@ -2,7 +2,7 @@ import { Parser, TestCase, Type } from '../../src/parsers';
 
 import { Filesystem } from '../../src/filesystem';
 import { JUnitParser } from '../../src/parsers';
-import { TextLineFactory } from '../../src/text-line-factory';
+import { TextLineFactory } from '../../src/text-line';
 import { Xml2jsParser } from '../../src/xml-parsers';
 import { resolve as pathResolve } from 'path';
 

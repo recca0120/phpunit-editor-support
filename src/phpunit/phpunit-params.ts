@@ -2,7 +2,7 @@ import { tap } from '../helpers';
 
 const minimist = require('minimist');
 
-export class RunnerParams {
+export class PHPUnitParams {
     private options: any;
 
     constructor(options: string[] = []) {

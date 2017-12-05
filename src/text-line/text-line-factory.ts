@@ -1,6 +1,7 @@
-import { Line, Task, TextLine } from './text-line';
-
-import { Filesystem } from './filesystem';
+import { Filesystem } from '../filesystem';
+import { Line } from './line';
+import { Task } from './task';
+import { TextLine } from './text-line';
 
 export class TextLineFactory {
     constructor(private files: Filesystem = new Filesystem()) {}

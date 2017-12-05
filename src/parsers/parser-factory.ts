@@ -1,7 +1,8 @@
-import { JUnitParser, Parser, TeamCityParser } from './parsers';
-
-import { Filesystem } from './filesystem';
-import { TextLineFactory } from './text-line-factory';
+import { Filesystem } from '../filesystem';
+import { JUnitParser } from './junit-parser';
+import { Parser } from './parser';
+import { TeamCityParser } from './teamcity-parser';
+import { TextLineFactory } from '../text-line';
 
 export class ParserFactory {
     constructor(

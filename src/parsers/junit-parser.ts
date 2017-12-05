@@ -4,7 +4,7 @@ import { Detail } from './detail';
 import { Filesystem } from '../filesystem';
 import { Parser } from './parser';
 import { TestCase } from './test-case';
-import { TextLineFactory } from '../text-line-factory';
+import { TextLineFactory } from '../text-line';
 import { Type } from './type';
 import { tap } from '../helpers';
 

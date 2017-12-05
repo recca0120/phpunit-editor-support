@@ -1,7 +1,7 @@
 import { ChildProcess, SpawnOptions, spawn } from 'child_process';
 
 import { EventEmitter } from 'events';
-import { tap } from './helpers';
+import { tap } from '../helpers';
 
 export class Process {
     constructor(private dispatcher: EventEmitter = new EventEmitter()) {}

@@ -1,5 +1,5 @@
-import { TextLine } from '../src/text-line';
-import { TextLineFactory } from '../src/text-line-factory';
+import { TextLine } from '../../src/text-line';
+import { TextLineFactory } from '../../src/text-line';
 import { resolve as pathResolve } from 'path';
 
 describe('TextLineFactory', () => {
@@ -7,7 +7,7 @@ describe('TextLineFactory', () => {
         const textlineFactory = new TextLineFactory();
         const pattern = new RegExp(` *public\\s+function\\s+.*\\s*\\(.*`, 'g');
         const textLines: TextLine[] = await textlineFactory.searchFile(
-            pathResolve(__dirname, 'fixtures/tests/PHPUnitTest.php'),
+            pathResolve(__dirname, '../fixtures/tests/PHPUnitTest.php'),
             pattern
         );
 

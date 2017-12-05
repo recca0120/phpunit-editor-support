@@ -1,8 +1,8 @@
-import { RunnerParams } from '../../src/runner';
+import { PHPUnitParams } from '../../src/phpunit';
 
-describe('RunnerParams', () => {
+describe('PHPUnitParams', () => {
     it('toParams', () => {
-        const options = new RunnerParams(['--log-junit', 'test.xml', '--teamcity', '-d', 'a=b', '-d', 'c=d', 'ssh']);
+        const options = new PHPUnitParams(['--log-junit', 'test.xml', '--teamcity', '-d', 'a=b', '-d', 'c=d', 'ssh']);
 
         expect(options.has('--log-junit')).toBe(false);
         expect(options.has('--teamcity')).toBe(true);

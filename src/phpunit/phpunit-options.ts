@@ -1,4 +1,4 @@
-export interface RunnerOptions {
+export interface PHPUnitOptions {
     rootPath?: string;
     execPath?: string | string[];
 }

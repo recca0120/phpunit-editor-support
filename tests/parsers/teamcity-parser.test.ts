@@ -1,9 +1,9 @@
 import { Parser, TeamCityParser, TestCase, Type } from '../../src/parsers';
-import { basename, resolve as pathResolve } from 'path';
 import { readFile, readFileSync } from 'fs';
 
 import { Filesystem } from '../../src/filesystem';
-import { TextLineFactory } from '../../src/text-line-factory';
+import { TextLineFactory } from '../../src/text-line';
+import { resolve as pathResolve } from 'path';
 
 class FilesystemStub extends Filesystem {
     getAsync(path: string, encoding: string = 'utf8'): Promise<string> {

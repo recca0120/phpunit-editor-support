@@ -2,7 +2,7 @@ import { Detail } from './detail';
 import { Filesystem } from '../filesystem';
 import { TestCase } from './test-case';
 import { TextLine } from '../text-line';
-import { TextLineFactory } from '../text-line-factory';
+import { TextLineFactory } from '../text-line';
 
 export abstract class Parser {
     constructor(
