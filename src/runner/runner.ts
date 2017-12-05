@@ -6,6 +6,9 @@ import { RunnerOptions } from './runner-options';
 import { RunnerParams } from './runner-params';
 import { State } from './state';
 import { TestCase } from '../parsers';
+import { parseSentence } from '../helpers';
+
+0;
 
 export class Runner {
     constructor(
@@ -31,9 +34,9 @@ export class Runner {
                 runnerParams.put('-c', this.getConfiguration(cwd, opts) || false);
             }
 
-            const executable: string = this.getExecutable(cwd, opts);
-
-            const spawnOptions = [executable].concat(runnerParams.toParams()).concat([path]);
+            const spawnOptions = this.getExecutable(cwd, opts)
+                .concat(runnerParams.toParams())
+                .concat([path]);
 
             this.dispatcher.emit('start', spawnOptions.join(' '));
 
@@ -72,22 +75,30 @@ export class Runner {
         return this.files.findUp(['phpunit.xml', 'phpunit.xml.dist'], { cwd, rootPath: opts.rootPath });
     }
 
-    public getExecutable(cwd: string, opts: RunnerOptions): string {
-        let execPath: string = opts.execPath as string;
+    public getExecutable(cwd: string, opts: RunnerOptions): string[] {
+        const execPath: string = opts.execPath as string;
 
         if (['', 'phpunit'].indexOf(execPath) === -1) {
-            return execPath;
+            return parseSentence(execPath)._;
         }
 
-        execPath = this.files.findUp(['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'], {
+        const options: any = {
             cwd,
             rootPath: opts.rootPath,
-        });
+        };
 
-        if (!execPath) {
+        const phpBinary = this.files.findUp(['usr/local/bin/php', 'usr/bin/php', 'bin/php', 'php'], options);
+        const phpunitBinary =
+            phpBinary === ''
+                ? this.files.findUp(['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'], options)
+                : this.files.findUp(['vendor/phpunit/phpunit/phpunit', 'phpunit.phar', 'phpunit'], options);
+
+        const command: string[] = [phpBinary, phpunitBinary].filter((cmd: string) => cmd !== '');
+
+        if (command.length === 0) {
             throw State.PHPUNIT_NOT_FOUND;
         }
 
-        return execPath;
+        return command;
     }
 }

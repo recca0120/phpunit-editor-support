@@ -1,5 +1,7 @@
 import { statSync } from 'fs';
 
+export const parseSentence = require('minimist-string');
+
 export function isWindows(): boolean {
     return /win32|mswin(?!ce)|mingw|bccwin|cygwin/i.test(process.platform);
 }

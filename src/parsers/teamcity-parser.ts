@@ -1,12 +1,11 @@
+import { parseSentence, tap } from '../helpers';
+
 import { Detail } from './detail';
 import { Parser } from './parser';
 import { TeamCity } from './teamcity';
 import { TestCase } from './test-case';
 import { TextLine } from '../text-line';
 import { Type } from './type';
-import { tap } from '../helpers';
-
-const minimistString = require('minimist-string');
 
 export class TeamCityParser extends Parser {
     private typeMap: any = {
@@ -92,7 +91,7 @@ export class TeamCityParser extends Parser {
                     .replace(/\\/g, '||')
                     .replace(/\|\'/g, "\\'");
 
-                const argv: string[] = minimistString(line)._;
+                const argv: string[] = parseSentence(line)._;
                 const teamCity: TeamCity = {
                     eventName: argv.shift() as string,
                 };

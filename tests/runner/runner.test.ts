@@ -1,10 +1,11 @@
+import { isWindows, parseSentence } from '../../src/helpers';
+
 import { Filesystem } from '../../src/filesystem';
 import { JUnitParser } from '../../src/parsers/index';
 import { ParserFactory } from '../../src/parser-factory';
 import { Process } from '../../src/process';
 import { ProcessFactory } from '../../src/process-factory';
 import { Runner } from '../../src/runner';
-import { isWindows } from '../../../src/helpers';
 import { resolve as pathResolve } from 'path';
 
 describe('Runner', () => {
@@ -35,13 +36,14 @@ describe('Runner', () => {
         const cwd = pathResolve(__dirname, '../fixtures/tests/PHPUnitTest.php');
         const rootPath = pathResolve(__dirname, '../fixtures/');
 
-        const expected: string = pathResolve(__dirname, '../fixtures/vendor/bin/phpunit') + (isWindows() ? '.bat' : '');
-
         expect(
             runner.getExecutable(cwd, {
                 rootPath,
                 execPath: '',
             })
-        ).toEqual(expected);
+        ).toEqual([
+            pathResolve(__dirname, '../fixtures/usr/bin/php') + (isWindows() ? '.exe' : ''),
+            pathResolve(__dirname, '../fixtures/vendor/phpunit/phpunit/phpunit'),
+        ]);
     });
 });
