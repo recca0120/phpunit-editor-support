@@ -17,8 +17,13 @@ export class Runner {
     ) {}
 
     run(path: string, params: string[] = [], opts: RunnerOptions = {}): Promise<TestCase[]> {
-        const rootPath = opts.rootPath || __dirname;
-        const execPath = opts.execPath || '';
+        opts = Object.assign(
+            {
+                rootPath: __dirname,
+                execPath: '',
+            },
+            opts
+        );
 
         const cwd: string = this.files.type(path) === 'f' ? this.files.dirname(path) : path;
         const runnerParams = new RunnerParams(params);
@@ -28,13 +33,13 @@ export class Runner {
                 runnerParams.put('--log-junit', this.files.tmpfile(`vscode-phpunit-junit-${new Date().getTime()}.xml`));
             }
 
-            const executable: string = this.getExecutable(execPath, cwd, rootPath);
-
             if (runnerParams.has('-c') === false) {
-                runnerParams.put('-c', this.getConfiguration(dirname(executable), rootPath) || false);
+                runnerParams.put('-c', this.getConfiguration(cwd, opts) || false);
             }
 
-            const spawnOptions = [executable].concat(runnerParams.toParams()).concat([path]);
+            const executable: string[] = this.getExecutable(cwd, opts);
+
+            const spawnOptions = executable.concat(runnerParams.toParams()).concat([path]);
 
             this.dispatcher.emit('start', spawnOptions.join(' '));
 
@@ -43,7 +48,7 @@ export class Runner {
                 .on('stdout', (buffer: Buffer) => this.dispatcher.emit('stdout', buffer))
                 .on('stderr', (buffer: Buffer) => this.dispatcher.emit('stderr', buffer))
                 .spawn(spawnOptions, {
-                    cwd: rootPath,
+                    cwd: opts.rootPath,
                 })
                 .then((output: string) => {
                     const parser = this.parserFactory.create(runnerParams.has('--teamcity') ? 'teamcity' : 'junit');
@@ -69,20 +74,26 @@ export class Runner {
         return this;
     }
 
-    private getConfiguration(cwd: string, rootPath: string): string {
-        return this.files.findUp(['phpunit.xml', 'phpunit.xml.dist'], { cwd, rootPath });
+    private getConfiguration(cwd: string, opts: RunnerOptions): string {
+        return this.files.findUp(['phpunit.xml', 'phpunit.xml.dist'], { cwd, rootPath: opts.rootPath });
     }
 
-    private getExecutable(execPath: string, cwd: string, rootPath: string): string {
+    private getExecutable(cwd: string, opts: RunnerOptions): string[] {
+        const execPath: string = opts.execPath as string;
+
+        if (['', 'phpunit'].indexOf(execPath) !== -1) {
+            return [execPath];
+        }
+
         const path: string = this.files.findUp(
-            [execPath, `vendor/bin/phpunit`, `phpunit.phar`, 'phpunit'].filter(path => path !== ''),
-            { cwd, rootPath }
+            ['vendor/bin/phpunit', 'phpunit.phar', 'phpunit'].filter(path => path !== ''),
+            { cwd, rootPath: opts.rootPath }
         );
 
         if (!path) {
             throw State.PHPUNIT_NOT_FOUND;
         }
 
-        return path;
+        return [path];
     }
 }
