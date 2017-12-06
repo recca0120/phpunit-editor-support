@@ -6,6 +6,7 @@ import { ParserFactory } from '../parsers';
 import { ProcessFactory } from '../process';
 import { State } from './state';
 import { TestCase } from '../parsers';
+import { dirname } from 'path';
 import { tap } from '../helpers';
 
 export class PHPUnit {
@@ -23,17 +24,22 @@ export class PHPUnit {
         const phpunitParms = new PHPUnitParams(params);
 
         return new Promise((resolve, reject) => {
+            const commands: string[] = this.getExecutable(cwd, opts);
+
             if (phpunitParms.has('--teamcity') === false) {
                 phpunitParms.put('--log-junit', this.files.tmpfile(`vscode-phpunit-junit-${new Date().getTime()}.xml`));
             }
 
             if (phpunitParms.has('-c') === false) {
-                phpunitParms.put('-c', this.getConfiguration(cwd, opts) || false);
+                tap(
+                    commands.find((command: string) => command.indexOf('phpunit') !== -1),
+                    (find: string | undefined) => {
+                        phpunitParms.put('-c', this.getConfiguration(find ? dirname(find) : cwd, opts) || false);
+                    }
+                );
             }
 
-            const spawnOptions = this.getExecutable(cwd, opts)
-                .concat(phpunitParms.toParams())
-                .concat([path]);
+            const spawnOptions = commands.concat(phpunitParms.toParams()).concat([path]);
 
             this.dispatcher.emit('start', spawnOptions.join(' '));
 
