@@ -7,37 +7,19 @@ import { POSIX } from './posix';
 import { Windows } from './windows';
 import { tmpdir } from 'os';
 
-export class Filesystem {
-    protected cache = new Map<string, string>();
-
-    constructor(private files = isWindows() ? new Windows() : new POSIX()) {}
+export class FilesystemBase {
+    constructor(protected files = isWindows() ? new Windows() : new POSIX()) {}
 
     find(search: string[] | string, opts: FilesOptions = {}): string {
-        const cwd = opts.cwd || process.cwd();
-        const key = this.key(search, [cwd]);
-
-        return this.cache.has(key) === true
-            ? this.cache.get(key)
-            : tap(this.files.find(search, opts), (find: string) => this.cache.set(key, find));
+        return this.files.find(search, opts);
     }
 
     exists(search: string[] | string, opts: FilesOptions = {}): boolean {
-        const cwd = opts.cwd || process.cwd();
-        const key = this.key(search, [cwd, 'exists']);
-
-        return this.cache.has(key) === true
-            ? this.cache.get(key)
-            : tap(this.files.exists(search, opts), (find: string) => this.cache.set(key, find));
+        return this.files.exists(search, opts)
     }
 
     findUp(search: string[] | string, opts: FilesOptions = {}): string {
-        const cwd = opts.cwd || process.cwd();
-        const rootPath = opts.rootPath || '';
-        const key = this.key(search, [cwd, rootPath]);
-
-        return this.cache.has(key) === true
-            ? this.cache.get(key)
-            : tap(this.files.findUp(search, opts), (find: string) => this.cache.set(key, find));
+        return this.files.findUp(search, opts)
     }
 
     get(path: string): string {
@@ -52,16 +34,18 @@ export class Filesystem {
         });
     }
 
-    unlink(file: string): void {
+    unlink(file: string): boolean {
         try {
             if (existsSync(file) === true) {
                 unlinkSync(file);
+
+                return true;
             }
-        } catch (e) {
-            setTimeout(() => {
-                this.unlink(file);
-            }, 500);
+        } catch (error) {
+            console.error(error);
         }
+
+        return false;
     }
 
     tmpfile(tmpname: string, dir: string = tmpdir()): string {
@@ -75,8 +59,45 @@ export class Filesystem {
     dirname(path: string): string {
         return dirname(path);
     }
+}
 
-    private key(search: string[] | string, opts: string[] = []) {
+
+export class Filesystem extends FilesystemBase {
+    protected cache = new Map<string, string>();
+
+    constructor(protected files = isWindows() ? new Windows() : new POSIX()) {
+        super(files);
+    }
+
+    find(search: string[] | string, opts: FilesOptions = {}): string {
+        const cwd = opts.cwd || process.cwd();
+        const key = this.key(search, [cwd]);
+
+        return this.cache.has(key) === true
+            ? this.cache.get(key)
+            : tap(super.find(search, opts), (find: string) => this.cache.set(key, find));
+    }
+
+    exists(search: string[] | string, opts: FilesOptions = {}): boolean {
+        const cwd = opts.cwd || process.cwd();
+        const key = this.key(search, [cwd, 'exists']);
+
+        return this.cache.has(key) === true
+            ? this.cache.get(key)
+            : tap(super.exists(search, opts), (find: string) => this.cache.set(key, find));
+    }
+
+    findUp(search: string[] | string, opts: FilesOptions = {}): string {
+        const cwd = opts.cwd || process.cwd();
+        const rootPath = opts.rootPath || '';
+        const key = this.key(search, [cwd, rootPath]);
+
+        return this.cache.has(key) === true
+            ? this.cache.get(key)
+            : tap(super.findUp(search, opts), (find: string) => this.cache.set(key, find));
+    }
+
+    private key(search: string[] | string, opts: string[] = []): string {
         return JSON.stringify(
             ensureArray(search)
                 .concat(opts)
